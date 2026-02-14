@@ -1,0 +1,10 @@
+{
+  "nodes": [
+    { "id": "bootstrap", "blockedBy": [], "completed": true },
+    {
+      "id": "foundation",
+      "blockedBy": ["bootstrap"],
+      "completed": false
+    }
+  ]
+}

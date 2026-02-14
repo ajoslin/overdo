@@ -1,0 +1,26 @@
+{
+  "name": "overdo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Overdo orchestration platform bootstrap",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "unit": "vitest run tests/unit",
+    "integration": "vitest run tests/integration",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@types/node": "^22.13.1",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.1",
+    "vitest": "^3.0.5"
+  }
+}
