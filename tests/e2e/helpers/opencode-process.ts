@@ -44,13 +44,27 @@ export async function runOpenCodeProcess(input: {
   workdir: string;
   label: string;
   retries?: number;
+  autoContinueOnFailure?: boolean;
+  continuePrompt?: string;
 }): Promise<OpenCodeRunResult> {
   const retries = input.retries ?? 0;
+  const continuePrompt = input.continuePrompt ?? "Continue from where you left off and finish the task.";
+  const autoContinueOnFailure = input.autoContinueOnFailure ?? false;
+
   let lastResult: OpenCodeRunResult | null = null;
+  let currentSessionId = input.sessionId;
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
-    const result = await runOpenCodeProcessOnce(input);
+    const promptForAttempt = attempt > 0 && autoContinueOnFailure ? continuePrompt : input.prompt;
+    const result = await runOpenCodeProcessOnce({
+      ...input,
+      prompt: promptForAttempt,
+      sessionId: currentSessionId
+    });
     lastResult = result;
+    if (result.sessionId) {
+      currentSessionId = result.sessionId;
+    }
     if (result.exitCode === 0) {
       return result;
     }
