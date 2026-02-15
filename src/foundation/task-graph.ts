@@ -6,28 +6,40 @@ export type TaskRecord = {
   id: string;
   title: string;
   status: TaskState;
+  priority: number;
+};
+
+type TransitionOptions = {
+  expectedCurrent?: TaskState;
+  allowWhenBlocked?: boolean;
 };
 
 function nowIso(): string {
   return new Date().toISOString();
 }
 
-export function createTask(db: DatabaseSync, task: { id: string; title: string; status?: TaskState }): TaskRecord {
+export function createTask(db: DatabaseSync, task: { id: string; title: string; status?: TaskState; priority?: number }): TaskRecord {
   const createdAt = nowIso();
+  const priority = task.priority ?? 1;
   db.prepare(
-    "insert into tasks (id, title, status, created_at, updated_at) values (?, ?, ?, ?, ?)"
-  ).run(task.id, task.title, task.status ?? "pending", createdAt, createdAt);
+    "insert into tasks (id, title, status, priority, created_at, updated_at) values (?, ?, ?, ?, ?, ?)"
+  ).run(task.id, task.title, task.status ?? "pending", priority, createdAt, createdAt);
   return getTask(db, task.id);
 }
 
 export function getTask(db: DatabaseSync, id: string): TaskRecord {
-  const row = db.prepare("select id, title, status from tasks where id = ?").get(id) as
-    | { id: string; title: string; status: TaskState }
+  const row = db.prepare("select id, title, status, priority from tasks where id = ?").get(id) as
+    | { id: string; title: string; status: TaskState; priority?: number }
     | undefined;
   if (!row) {
     throw new Error(`task not found: ${id}`);
   }
-  return row;
+  return {
+    id: row.id,
+    title: row.title,
+    status: row.status,
+    priority: row.priority ?? 1
+  };
 }
 
 export function addDependency(db: DatabaseSync, taskId: string, dependsOn: string): void {
@@ -44,7 +56,11 @@ export function addDependency(db: DatabaseSync, taskId: string, dependsOn: strin
   }
 }
 
-function dependsOnTask(db: DatabaseSync, sourceTask: string, targetTask: string): boolean {
+function dependsOnTask(db: DatabaseSync, sourceTask: string, targetTask: string, seen = new Set<string>()): boolean {
+  if (seen.has(sourceTask)) {
+    return false;
+  }
+  seen.add(sourceTask);
   const direct = db
     .prepare("select depends_on from task_dependencies where task_id = ?")
     .all(sourceTask) as Array<{ depends_on: string }>;
@@ -52,7 +68,7 @@ function dependsOnTask(db: DatabaseSync, sourceTask: string, targetTask: string)
     if (item.depends_on === targetTask) {
       return true;
     }
-    if (dependsOnTask(db, item.depends_on, targetTask)) {
+    if (dependsOnTask(db, item.depends_on, targetTask, seen)) {
       return true;
     }
   }
@@ -63,8 +79,16 @@ function hasCycle(db: DatabaseSync, taskId: string): boolean {
   return dependsOnTask(db, taskId, taskId);
 }
 
-export function transitionTask(db: DatabaseSync, taskId: string, nextStatus: TaskState): TaskRecord {
+export function transitionTask(
+  db: DatabaseSync,
+  taskId: string,
+  nextStatus: TaskState,
+  options: TransitionOptions = {}
+): TaskRecord {
   const current = getTask(db, taskId);
+  if (options.expectedCurrent && current.status !== options.expectedCurrent) {
+    throw new Error(`optimistic lock failed ${current.status} != ${options.expectedCurrent}`);
+  }
   const allowed: Record<TaskState, TaskState[]> = {
     pending: ["running"],
     running: ["done", "pending"],
@@ -73,21 +97,43 @@ export function transitionTask(db: DatabaseSync, taskId: string, nextStatus: Tas
   if (!allowed[current.status].includes(nextStatus)) {
     throw new Error(`invalid transition ${current.status} -> ${nextStatus}`);
   }
+  if (nextStatus === "running" && !options.allowWhenBlocked && !isTaskReady(db, taskId)) {
+    throw new Error(`task is blocked and cannot transition to running: ${taskId}`);
+  }
+
   db.prepare("update tasks set status = ?, updated_at = ? where id = ?").run(nextStatus, nowIso(), taskId);
   return getTask(db, taskId);
 }
 
 export function nextReadyTask(db: DatabaseSync): TaskRecord | null {
-  const rows = db.prepare("select id, title, status from tasks where status = 'pending' order by id asc").all() as TaskRecord[];
+  const rows = db
+    .prepare("select id, title, status, priority from tasks where status = 'pending' order by priority asc, created_at asc, id asc")
+    .all() as Array<{ id: string; title: string; status: TaskState; priority?: number }>;
   for (const row of rows) {
-    const deps = db
-      .prepare(
-        "select td.depends_on as depends_on, t.status as status from task_dependencies td join tasks t on t.id = td.depends_on where td.task_id = ?"
-      )
-      .all(row.id) as Array<{ depends_on: string; status: TaskState }>;
-    if (deps.every((dep) => dep.status === "done")) {
-      return row;
+    if (isTaskReady(db, row.id)) {
+      return {
+        id: row.id,
+        title: row.title,
+        status: row.status,
+        priority: row.priority ?? 1
+      };
     }
   }
   return null;
+}
+
+export function isTaskReady(db: DatabaseSync, taskId: string): boolean {
+  const deps = db
+    .prepare(
+      "select td.depends_on as depends_on, t.status as status from task_dependencies td join tasks t on t.id = td.depends_on where td.task_id = ?"
+    )
+    .all(taskId) as Array<{ depends_on: string; status: TaskState }>;
+  return deps.every((dep) => dep.status === "done");
+}
+
+export function listBlockedBy(db: DatabaseSync, taskId: string): string[] {
+  const rows = db.prepare("select depends_on from task_dependencies where task_id = ? order by depends_on asc").all(taskId) as Array<{
+    depends_on: string;
+  }>;
+  return rows.map((row) => row.depends_on);
 }

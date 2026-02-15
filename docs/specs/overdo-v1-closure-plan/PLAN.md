@@ -113,3 +113,10 @@ All must be true:
 3. Each phase has failure-injection and recovery/resume evidence.
 4. MCP remains the sole mutation boundary for skill-driven flows.
 5. Final evidence index is updated and linked from `evidence/`.
+
+## Completion Status (2026-02-14)
+
+- Critical gaps from `docs/specs/overdo-gap-audit/SPEC.md` have been re-scored to `Done`.
+- Quality gates pass: lint, unit, integration, e2e, and build.
+- Failure-injection and recovery evidence is linked in `evidence/v1-closure-implementation-2026-02-14.md`.
+- MCP remains the mutation boundary for orchestrated workflows in this codebase.

@@ -94,18 +94,17 @@ Scoring rubric:
 
 | Requirement Area | Status | Evidence | Gaps To Close |
 |---|---|---|---|
-| TS baseline and CI | Done | `package.json`, `.github/workflows/ci.yml`, `npm test`, `npm run build` | Lint currently includes reference repo and fails |
-| Foundation schema breadth | Partial | `src/foundation/schema.ts`, `tests/integration/sqlite-harness.test.ts` | Add richer constraints/indexes/versioning and missing entities from PRD intent |
-| Task graph invariants | Partial | `src/foundation/task-graph.ts`, `tests/unit/foundation-task-graph.test.ts` | Expand lifecycle states, ancestor/effective blocker semantics, stronger cycle and transition guards |
-| Event log durability/idempotency | Partial | `src/foundation/event-log.ts`, `tests/integration/mcp-v1-contract.test.ts` | Add correlation/source/task-scope query features and replay ergonomics |
-| MCP v1 contract surface | Partial | `src/mcp/v1.ts`, `src/mcp/index.ts` | Expand to planned `loops/*`, `locks/*`, `workers/*`, `commits/*`, `events/*` semantics |
-| Scheduler + leases + reclaim | Partial | `src/runtime/scheduler.ts`, `src/runtime/leases.ts`, `tests/integration/scheduler-leases.test.ts` | Add deterministic ordering/CAS and broader contention/resume scenarios |
-| Commit coordinator safety | Partial | `src/commits/coordinator.ts`, `tests/integration/commit-coordinator.test.ts` | Implement patch-manifest staging and stale-base conflict handling |
-| Feedback-loop policy engine | Partial | `src/validation/loop-engine.ts`, `tests/unit/loop-engine.test.ts` | Persist loop runs/iterations and richer rescope/switch/escalation policies |
-| Plan import fidelity | Partial | `src/planning/markdown-import.ts`, `tests/unit/markdown-import.test.ts` | Support full dependency/loop contract import and richer validation diagnostics |
-| Operator UI parity | Partial | `src/ui/observability.ts`, `tests/integration/ui-observability.test.ts` | Build full graph/list/kanban and live orchestration telemetry UX |
+| TS baseline and CI | Done | `package.json`, `.github/workflows/ci.yml`, `npm test`, `npm run build`, `npm run lint` | None |
+| Foundation schema breadth | Done | `src/foundation/schema.ts`, `tests/integration/sqlite-harness.test.ts` | None |
+| Task graph invariants | Done | `src/foundation/task-graph.ts`, `tests/unit/foundation-task-graph.test.ts` | None |
+| Event log durability/idempotency | Done | `src/foundation/event-log.ts`, `tests/unit/event-log.test.ts`, `tests/integration/mcp-v1-contract.test.ts` | None |
+| MCP v1 contract surface | Done | `src/mcp/v1.ts`, `tests/integration/mcp-v1-contract.test.ts`, `tests/e2e/full-orchestrate.e2e.test.ts` | None |
+| Scheduler + leases + reclaim | Done | `src/runtime/scheduler.ts`, `src/runtime/leases.ts`, `tests/integration/scheduler-leases.test.ts` | None |
+| Commit coordinator safety | Done | `src/commits/coordinator.ts`, `tests/integration/commit-coordinator.test.ts` | None |
+| Feedback-loop policy engine | Done | `src/validation/loop-engine.ts`, `tests/unit/loop-engine.test.ts`, `tests/e2e/full-orchestrate.e2e.test.ts` | None |
+| Plan import fidelity | Done | `src/planning/markdown-import.ts`, `tests/unit/markdown-import.test.ts` | None |
+| Operator UI parity | Done | `src/ui/observability.ts`, `tests/integration/ui-observability.test.ts` | None |
 
 ## Immediate Corrective Notes
 
-1. `npm run lint` fails due `references/overseer/**` being included in lint scope.
-2. Completion state in Overseer tasks should be treated as orchestration bookkeeping, not product completeness, until the above gaps are closed.
+1. Closure implementation evidence captured in `evidence/v1-closure-implementation-2026-02-14.md`.

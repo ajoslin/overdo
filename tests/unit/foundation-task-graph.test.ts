@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { addDependency, createTask, nextReadyTask, transitionTask } from "../../src/foundation/task-graph.js";
+import { addDependency, createTask, isTaskReady, nextReadyTask, transitionTask } from "../../src/foundation/task-graph.js";
 import { setupTestDb } from "../helpers/db.js";
 
 describe("task graph foundation", () => {
@@ -33,5 +33,19 @@ describe("task graph foundation", () => {
     transitionTask(db, "t1", "done");
 
     expect(() => transitionTask(db, "t1", "running")).toThrow("invalid transition done -> running");
+  });
+
+  it("prevents running blocked task until dependencies are done", () => {
+    const db = setupTestDb();
+    createTask(db, { id: "a", title: "A" });
+    createTask(db, { id: "b", title: "B" });
+    addDependency(db, "b", "a");
+
+    expect(isTaskReady(db, "b")).toBe(false);
+    expect(() => transitionTask(db, "b", "running")).toThrow("task is blocked and cannot transition to running");
+
+    transitionTask(db, "a", "running");
+    transitionTask(db, "a", "done");
+    expect(isTaskReady(db, "b")).toBe(true);
   });
 });

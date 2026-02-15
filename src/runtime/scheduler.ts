@@ -1,7 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 
 import { nextReadyTask, transitionTask, type TaskRecord } from "../foundation/task-graph.js";
-import { claimTaskLease } from "./leases.js";
+import { claimTaskLeaseCas, releaseTaskLease } from "./leases.js";
 
 export type DispatchRecord = {
   taskId: string;
@@ -22,11 +22,15 @@ export function dispatchReadyTasks(
     if (!candidate) {
       break;
     }
-    if (!claimTaskLease(db, candidate.id, workerId, leaseTtlMs)) {
+    if (!claimTaskLeaseCas(db, candidate.id, workerId, leaseTtlMs, null)) {
       continue;
     }
-    transitionTask(db, candidate.id, "running");
-    results.push({ taskId: candidate.id, workerId });
+    try {
+      transitionTask(db, candidate.id, "running", { expectedCurrent: "pending" });
+      results.push({ taskId: candidate.id, workerId });
+    } catch {
+      releaseTaskLease(db, candidate.id, workerId);
+    }
   }
 
   return results;
@@ -47,4 +51,15 @@ export function reclaimExpiredLeases(db: DatabaseSync): number {
   }
   db.prepare("delete from task_leases where expires_at <= ?").run(now);
   return stale.length;
+}
+
+export function schedulerSnapshot(db: DatabaseSync): {
+  running: number;
+  pending: number;
+  leases: number;
+} {
+  const running = Number((db.prepare("select count(*) as count from tasks where status = 'running'").get() as { count: number }).count);
+  const pending = Number((db.prepare("select count(*) as count from tasks where status = 'pending'").get() as { count: number }).count);
+  const leases = Number((db.prepare("select count(*) as count from task_leases").get() as { count: number }).count);
+  return { running, pending, leases };
 }

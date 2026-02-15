@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { acquireCommitLock, enqueueCommit, processNextCommit } from "../../src/commits/coordinator.js";
+import { acquireCommitLock, enqueueCommit, listQueuedCommits, processNextCommit } from "../../src/commits/coordinator.js";
 import { setupTestDb } from "../helpers/db.js";
 
 describe("commit coordinator", () => {
@@ -15,7 +15,11 @@ describe("commit coordinator", () => {
 
   it("processes queued commits and persists transaction audit trail", () => {
     const db = setupTestDb();
-    enqueueCommit(db, { taskId: "task-1", summary: "checkpoint" });
+    enqueueCommit(db, {
+      taskId: "task-1",
+      summary: "checkpoint",
+      manifest: { paths: ["src/foundation/task-graph.ts"], baseRevision: "r1", currentRevision: "r1" }
+    });
 
     const processed = processNextCommit(db, {
       owner: "worker-a",
@@ -35,5 +39,35 @@ describe("commit coordinator", () => {
       commit_sha: string;
     };
     expect(txRow).toEqual({ task_id: "task-1", commit_sha: "abc123def456" });
+
+    expect(listQueuedCommits(db)).toHaveLength(0);
+  });
+
+  it("rejects stale base revisions in queued commit", () => {
+    const db = setupTestDb();
+    enqueueCommit(db, {
+      taskId: "task-2",
+      summary: "checkpoint",
+      manifest: { paths: ["src/mcp/v1.ts"], baseRevision: "r1", currentRevision: "r2" }
+    });
+
+    expect(() =>
+      processNextCommit(db, {
+        owner: "worker-a",
+        taskId: "task-2",
+        commitSha: "deadbeef"
+      })
+    ).toThrow("stale base revision detected");
+  });
+
+  it("rejects enqueue when manifest paths are empty", () => {
+    const db = setupTestDb();
+    expect(() =>
+      enqueueCommit(db, {
+        taskId: "task-3",
+        summary: "bad",
+        manifest: { paths: [] }
+      })
+    ).toThrow("commit manifest must contain at least one path");
   });
 });

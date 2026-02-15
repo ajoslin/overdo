@@ -20,4 +20,13 @@ describe("markdown plan import", () => {
       "no milestone tasks found in markdown plan"
     );
   });
+
+  it("parses explicit blockers and gate annotations", () => {
+    const plan = importMarkdownPlan(`## Milestone Alpha\n1. Bootstrap [gates: lint,unit,integration]\n2. Ship [blocked-by: bootstrap-task] [gates:e2e]`);
+
+    expect(plan.tasks[0].requiredGates).toEqual(["lint", "unit", "integration"]);
+    expect(plan.tasks[1].blockedBy).toEqual(["bootstrap-task"]);
+    expect(plan.tasks[1].requiredGates).toEqual(["e2e"]);
+    expect(plan.tasks[0].milestone).toBe("milestone-alpha");
+  });
 });

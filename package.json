@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "unit": "vitest run tests/unit",
     "integration": "vitest run tests/integration",
+    "e2e": "vitest run tests/e2e",
     "test": "vitest run"
   },
   "engines": {

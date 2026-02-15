@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { createTask } from "../../src/foundation/task-graph.js";
-import { dispatchReadyTasks, reclaimExpiredLeases } from "../../src/runtime/scheduler.js";
+import { claimTaskLeaseCas } from "../../src/runtime/leases.js";
+import { dispatchReadyTasks, reclaimExpiredLeases, schedulerSnapshot } from "../../src/runtime/scheduler.js";
 import { setupTestDb } from "../helpers/db.js";
 
 describe("scheduler and lease runtime", () => {
@@ -26,5 +27,16 @@ describe("scheduler and lease runtime", () => {
 
     const row = db.prepare("select status from tasks where id = ?").get("t1") as { status: string };
     expect(row.status).toBe("pending");
+
+    expect(schedulerSnapshot(db)).toEqual({ running: 0, pending: 1, leases: 0 });
+  });
+
+  it("uses CAS lease claims without throwing under contention", () => {
+    const db = setupTestDb();
+    createTask(db, { id: "t1", title: "Task 1" });
+
+    expect(claimTaskLeaseCas(db, "t1", "w1", 60_000, null)).toBe(true);
+    expect(claimTaskLeaseCas(db, "t1", "w2", 60_000, null)).toBe(false);
+    expect(claimTaskLeaseCas(db, "t1", "w2", 60_000, "w1")).toBe(true);
   });
 });

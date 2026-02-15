@@ -65,6 +65,7 @@ It is not a direct fork target.
 npm run lint
 npm run unit
 npm run integration
+npm run e2e
 npm test
 
 # Build

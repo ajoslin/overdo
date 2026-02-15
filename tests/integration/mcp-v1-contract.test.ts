@@ -37,4 +37,59 @@ describe("MCP v1 contract", () => {
 
     expect(listEvents(db, "t1")).toHaveLength(1);
   });
+
+  it("executes end-to-end loop and commit APIs via MCP", () => {
+    const db = setupTestDb();
+    const mcp = new OverdoMcpV1(db);
+
+    mcp.tasksCreate({ id: "t1", title: "Task 1", priority: 0 });
+    mcp.loopsDefine("t1", { requiredGates: ["lint", "unit"], neverGiveUp: false, maxAttempts: 2 });
+    const run = mcp.loopsStart("t1");
+    const escalatesAtTwo = mcp.loopsEvaluate(
+      run.id,
+      [
+        { gate: "lint", passed: true },
+        { gate: "unit", passed: false }
+      ],
+      2
+    );
+    expect(escalatesAtTwo).toEqual({ canComplete: false, escalationRequired: true });
+
+    const first = mcp.loopsRecordIteration({
+      runId: run.id,
+      taskId: "t1",
+      attempt: 1,
+      gateResults: [
+        { gate: "lint", passed: true },
+        { gate: "unit", passed: false }
+      ],
+      failureMessage: "hook failed"
+    });
+    expect(first.decision).toBe("retry");
+
+    const second = mcp.loopsRecordIteration({
+      runId: run.id,
+      taskId: "t1",
+      attempt: 2,
+      gateResults: [
+        { gate: "lint", passed: true },
+        { gate: "unit", passed: true }
+      ]
+    });
+    expect(second.decision).toBe("complete");
+
+    const queueId = mcp.commitsEnqueue({
+      taskId: "t1",
+      summary: "checkpoint",
+      paths: ["src/mcp/v1.ts"],
+      baseRevision: "r1",
+      currentRevision: "r1"
+    });
+    expect(queueId).toBeGreaterThan(0);
+    expect(mcp.commitsProcess({ owner: "worker-a", taskId: "t1", commitSha: "abc" })).toBe(true);
+    expect(mcp.commitsQueued()).toHaveLength(0);
+
+    const replay = mcp.eventsReplay(0, 100);
+    expect(replay.some((event) => event.eventType === "loop.iteration")).toBe(true);
+  });
 });
