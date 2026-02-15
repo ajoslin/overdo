@@ -34,11 +34,38 @@ Create/update these artifacts:
 
 - Every claim must cite at least one concrete file path and one test/command.
 - No subjective "feels equivalent" statements without measurable criteria.
+- Every code change made during the audit must be validated before merge via at least one of:
+  - unit/integration test
+  - e2e test
+  - Playwriter smoke verification with saved artifacts
 - For each category, include:
   - `status`: pass / partial / fail
   - `confidence`: high / medium / low
   - `blocking gaps`: explicit list
   - `next implementation task`: one-line actionable item
+
+## Testing protocol (mandatory)
+
+When the next session patches code while auditing, run a tight feedback loop and record results in evidence:
+
+1. run the narrowest relevant automated test first (unit/integration/e2e)
+2. patch failures
+3. re-run the same test until green
+4. run broader regression command(s) before final report
+
+Validation mapping to enforce:
+
+- UI behavior changes: Playwriter smoke + `tests/integration/ui-observability.test.ts`
+- Commit/lock behavior changes: integration tests touching `src/commits/coordinator.ts`
+- Runtime/process behavior changes: `tests/e2e/process/*`
+- CLI behavior changes: add or run an e2e test that spawns the CLI process (see note below)
+
+CLI testing note:
+
+- The CLI is testable in e2e by spawning the executable (`scripts/overdo.mjs` / `overdo` bin)
+  using the existing process harness patterns under `tests/e2e/process/`.
+- Do not rely only on mocked function tests for CLI flows; include at least one process-spawn test
+  for any user-visible CLI behavior touched by the audit implementation.
 
 ## Audit matrix to complete
 
@@ -124,6 +151,9 @@ npm test
 npm run build
 npm run e2e:process
 E2E_PROCESS_CHAOS_ROUNDS=5 npm run e2e:process:chaos
+# When CLI behavior is touched, also run targeted spawned-process coverage:
+vitest run tests/e2e/process/spawn-single-opencode.e2e.test.ts
+vitest run tests/e2e/process/spawn-multi-opencode.e2e.test.ts
 ```
 
 ## Suggested final output format (for the next session)

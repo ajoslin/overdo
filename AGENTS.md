@@ -8,8 +8,8 @@ guardrails for agent work in this repository.
 Overdo is a TypeScript-first orchestration platform that evolves Overseer-inspired patterns into a
 SQLite-native system with first-class feedback loops, resumability, and safe local multi-worker execution.
 
-Overseer in `references/overseer` is a template/reference source for architecture and workflow patterns.
-It is not a direct fork target.
+Overseer in `references/overseer` is the upstream reference and should be treated as a superset-fork target.
+When feasible, implement features in Overseer style and keep feature behavior/UX equivalent where possible.
 
 ## Language and Runtime Policy
 

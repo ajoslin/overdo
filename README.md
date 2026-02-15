@@ -45,10 +45,15 @@ This installs:
 ```bash
 # CLI
 overdo help
-overdo doctor
-overdo test all
+overdo --version
+overdo --db .overdo/tasks.db init
+overdo test unit
 overdo test process
+overdo --json task create -d "Bootstrap milestone"
+overdo --json task list --ready
 overdo mcp
+overdo ui --port 6969
+overdo completions bash
 
 # quality
 npm run lint
