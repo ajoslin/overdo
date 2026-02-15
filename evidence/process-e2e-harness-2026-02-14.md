@@ -26,10 +26,16 @@ Validated OpenCode process-level harness behavior with deterministic/gated tests
   - forced kill + resume same session
 - `tests/e2e/process/session-state-preserved.e2e.test.ts`
   - same-session continuation and memory check
+- `tests/e2e/process/crash-resume-double-hop.e2e.test.ts`
+  - two crash cycles on same session + resumed continuation validated via session export
+- `tests/e2e/process/crash-isolation-parallel.e2e.test.ts`
+  - one killed process does not block a concurrent healthy process
+- `tests/e2e/process/artifact-contract.e2e.test.ts`
+  - verifies required artifact files and assertion fields exist per run
 
 ## Validation Results
 
-- `npm run e2e:process` passed: 5/5 process tests.
+- `npm run e2e:process` passed: 8/8 process tests.
 - `npm run e2e` passed with process tests gated by env var.
 - `npm test`, `npm run lint`, and `npm run build` pass.
 
