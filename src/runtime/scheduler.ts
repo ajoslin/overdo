@@ -2,6 +2,7 @@ import { DatabaseSync } from "node:sqlite";
 
 import { nextReadyTask, transitionTask, type TaskRecord } from "../foundation/task-graph.js";
 import { claimTaskLeaseCas, releaseTaskLease } from "./leases.js";
+import { emitCheckpoint } from "./checkpoints.js";
 
 export type DispatchRecord = {
   taskId: string;
@@ -26,6 +27,7 @@ export function dispatchReadyTasks(
       continue;
     }
     try {
+      emitCheckpoint("lease-claimed-before-running", { taskId: candidate.id, workerId });
       transitionTask(db, candidate.id, "running", { expectedCurrent: "pending" });
       results.push({ taskId: candidate.id, workerId });
     } catch {

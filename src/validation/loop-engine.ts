@@ -1,4 +1,5 @@
 import { DatabaseSync } from "node:sqlite";
+import { emitCheckpoint } from "../runtime/checkpoints.js";
 
 export type GateName = "lint" | "unit" | "integration" | "e2e";
 
@@ -75,6 +76,7 @@ export function startLoopRun(db: DatabaseSync, taskId: string, contract: LoopCon
     .prepare("insert into loop_runs (task_id, run_status, contract_snapshot, created_at) values (?, 'running', ?, ?)")
     .run(taskId, JSON.stringify(contract), now);
   const id = Number(result.lastInsertRowid);
+  emitCheckpoint("loop-started-before-iteration", { taskId, runId: id });
   return {
     id,
     taskId,
@@ -129,6 +131,10 @@ export function appendLoopIteration(
   }
   if (decision === "escalate") {
     db.prepare("update loop_runs set run_status = 'escalated' where id = ?").run(input.runId);
+  }
+
+  if (decision === "retry") {
+    emitCheckpoint("loop-failed-before-retry-schedule", { taskId: input.taskId, runId: input.runId, attempt: input.attempt });
   }
 
   return {

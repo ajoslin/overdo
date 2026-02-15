@@ -1,4 +1,5 @@
 import { DatabaseSync } from "node:sqlite";
+import { emitCheckpoint } from "../runtime/checkpoints.js";
 
 export type CommitRequest = {
   taskId: string;
@@ -28,6 +29,7 @@ export function enqueueCommit(db: DatabaseSync, request: CommitRequest): number 
       manifest.currentRevision ?? null,
       now
     );
+  emitCheckpoint("commit-enqueued-before-lock", { taskId: request.taskId, summary: request.summary });
   return Number(result.lastInsertRowid);
 }
 
@@ -60,6 +62,7 @@ export function processNextCommit(
   }
 
   try {
+    emitCheckpoint("commit-lock-held", { owner: input.owner, taskId: input.taskId });
     const queued = db
       .prepare(
         "select id, manifest_json, base_revision, current_revision from commit_queue where task_id = ? and status = 'queued' order by id asc limit 1"
