@@ -9,9 +9,9 @@ implementation evidence.
 
 ## Current Truth Snapshot
 
-- Tests: `npm test` passes (22/22).
-- Build: `npm run build` passes.
-- Lint: `npm run lint` fails due `references/overseer/**` being linted.
+- Tests: `bun run test` passes (22/22).
+- Build: `bun run build` passes.
+- Lint: `bun run lint` fails due `references/overseer/**` being linted.
 - Core modules exist across foundation, runtime, mcp, commits, validation, planning, and ui.
 - Multiple critical areas are still partial per `docs/specs/overdo-gap-audit/SPEC.md`.
 
@@ -34,7 +34,7 @@ Contract Hardening -> Runtime Safety -> Commit Safety -> Loop Durability -> UI/S
 
 Done when:
 
-- `npm run lint`, `npm test`, and `npm run build` all pass in this repo.
+- `bun run lint`, `bun run test`, and `bun run build` all pass in this repo.
 - MCP contract doc includes explicit error conditions and idempotency rules.
 
 Validation loop:

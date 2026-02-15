@@ -25,7 +25,7 @@ Execution policy:
 ## Goals & Success Metrics
 | Metric | Current | Target | How Measured |
 |--------|---------|--------|--------------|
-| Multi-process orchestration coverage | None | 1, 2, and 3+ worker process scenarios | `tests/e2e/process/*.test.ts` |
+| Multi-process orchestration coverage | None | 1, 2, and 3+ worker process scenarios | `packages/overdo-cli/tests/e2e/process/*.test.ts` |
 | Crash-resume correctness | Partial (simulated) | Real process kill + restart resume | Durable state assertions from SQLite |
 | Feedback-loop behavior under retries/rejects | Partial | Deterministic retry/escalation/review loops | Loop iteration/evidence assertions |
 | Commit lock safety under contention | Partial | No concurrent commit corruption | Concurrent commit worker tests |
@@ -123,18 +123,18 @@ To make crash checkpoints deterministic, runtime paths must emit named test barr
 
 ## Dependencies
 
-- `src/mcp/v1.ts`
-- `src/runtime/scheduler.ts`
-- `src/runtime/leases.ts`
-- `src/validation/loop-engine.ts`
-- `src/commits/coordinator.ts`
-- `tests/helpers/db.ts`
+- `packages/overdo-core/src/mcp/v1.ts`
+- `packages/overdo-core/src/runtime/scheduler.ts`
+- `packages/overdo-core/src/runtime/leases.ts`
+- `packages/overdo-core/src/validation/loop-engine.ts`
+- `packages/overdo-core/src/commits/coordinator.ts`
+- `packages/overdo-core/tests/helpers/db.ts`
 - Node child-process harness utilities
 
 ## Integration Touchpoints
 
-- New harness utilities under `tests/e2e/helpers/`.
-- New process scenarios under `tests/e2e/process/`.
+- New harness utilities under `packages/overdo-cli/tests/e2e/helpers/`.
+- New process scenarios under `packages/overdo-cli/tests/e2e/process/`.
 - Potential package scripts:
   - `e2e:process`
   - `e2e:process:chaos`
@@ -217,6 +217,6 @@ Trade-offs:
 
 - `docs/specs/overdo-v1-closure-plan/PLAN.md`
 - `docs/specs/overdo-gap-audit/SPEC.md`
-- `tests/e2e/full-orchestrate.e2e.test.ts`
-- `src/runtime/scheduler.ts`
-- `src/validation/loop-engine.ts`
+- `packages/overdo-core/tests/e2e/full-orchestrate.e2e.test.ts`
+- `packages/overdo-core/src/runtime/scheduler.ts`
+- `packages/overdo-core/src/validation/loop-engine.ts`

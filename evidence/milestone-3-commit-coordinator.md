@@ -7,7 +7,7 @@
 
 ## Validation
 
-- Integration: `tests/integration/commit-coordinator.test.ts`
+- Integration: `packages/overdo-core/tests/integration/commit-coordinator.test.ts`
   - lock contention blocks concurrent writers
   - queued commit processing emits transaction trail
 

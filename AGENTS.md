@@ -24,22 +24,19 @@ When feasible, implement features in Overseer style and keep feature behavior/UX
 
 ```
 .
-├── src/
-│   ├── foundation/         # schema, task graph, event log
-│   ├── mcp/                # MCP surface and health
-│   ├── runtime/            # scheduler and lease runtime
-│   ├── commits/            # commit coordinator and lock logic
-│   ├── validation/         # feedback-loop engine
-│   ├── planning/           # markdown plan import
-│   ├── ui/                 # observability snapshot logic
-│   ├── scheduler/          # lightweight selection helper
-│   ├── workers/            # worker dispatch helper
-│   └── skills/             # skill-facing entry points
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   ├── fixtures/
-│   └── helpers/
+├── packages/
+│   ├── overdo-core/
+│   │   ├── src/            # schema, task graph, event log, runtime, validation
+│   │   └── tests/          # unit/integration/e2e fixtures and helpers
+│   ├── overdo-cli/
+│   │   ├── bin/            # overdo CLI entrypoints
+│   │   ├── scripts/        # process/chaos helpers
+│   │   └── tests/          # CLI/process e2e harness
+│   ├── overdo-mcp/
+│   │   └── bin/            # MCP server entrypoint
+│   └── overdo-plugin/
+│       ├── src/            # OpenCode plugin hooks
+│       └── tests/          # plugin policy tests
 ├── evidence/               # milestone validation artifacts
 ├── docs/specs/             # specs (gap audit + full implementation)
 ├── references/overseer/    # upstream template repository (read-only reference)
@@ -61,31 +58,32 @@ When feasible, implement features in Overseer style and keep feature behavior/UX
 ## Commands
 
 ```bash
+
 # Quality and tests
-npm run lint
-npm run unit
-npm run integration
-npm run e2e
-npm test
+bun run lint
+bun run unit
+bun run integration
+bun run e2e
+bun run test
 
 # Build
-npm run build
+bun run build
 ```
 
 ## Where to Look First
 
 | Task | File |
 |------|------|
-| Schema and storage | `src/foundation/schema.ts` |
-| Task lifecycle and dependencies | `src/foundation/task-graph.ts` |
-| Event append/query behavior | `src/foundation/event-log.ts` |
-| MCP contract surface | `src/mcp/v1.ts` |
-| Scheduler dispatch/reclaim | `src/runtime/scheduler.ts` |
-| Lease behavior | `src/runtime/leases.ts` |
-| Commit queue/lock logic | `src/commits/coordinator.ts` |
-| Feedback loop policy | `src/validation/loop-engine.ts` |
-| Plan import behavior | `src/planning/markdown-import.ts` |
-| UI observability snapshot | `src/ui/observability.ts` |
+| Schema and storage | `packages/overdo-core/src/foundation/schema.ts` |
+| Task lifecycle and dependencies | `packages/overdo-core/src/foundation/task-graph.ts` |
+| Event append/query behavior | `packages/overdo-core/src/foundation/event-log.ts` |
+| MCP contract surface | `packages/overdo-core/src/mcp/v1.ts` |
+| Scheduler dispatch/reclaim | `packages/overdo-core/src/runtime/scheduler.ts` |
+| Lease behavior | `packages/overdo-core/src/runtime/leases.ts` |
+| Commit queue/lock logic | `packages/overdo-core/src/commits/coordinator.ts` |
+| Feedback loop policy | `packages/overdo-core/src/validation/loop-engine.ts` |
+| Plan import behavior | `packages/overdo-core/src/planning/markdown-import.ts` |
+| UI observability snapshot | `packages/overdo-core/src/ui/observability.ts` |
 
 ## Spec and Planning Sources
 

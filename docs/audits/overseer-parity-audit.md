@@ -14,7 +14,7 @@ Overdo now has strong orchestration core/test coverage and process-level crash m
 - Status: **Partial**
 - What exists:
   - backend UI snapshot and view-model builders (`graph/list/kanban`) in `src/ui/observability.ts`
-  - UI telemetry tests in `tests/integration/ui-observability.test.ts`
+  - UI telemetry tests in `packages/overdo-core/tests/integration/ui-observability.test.ts`
 - Missing for near 1:1 parity:
   - full interactive frontend app
   - richer UX controls, streaming updates, and visual parity pass

@@ -1,0 +1,14 @@
+{
+  "name": "overdo-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bunx tsc -p tsconfig.json",
+    "lint": "bunx eslint .",
+    "unit": "bunx vitest run --config vitest.config.ts tests/unit",
+    "integration": "bunx vitest run --config vitest.config.ts tests/integration",
+    "e2e": "bunx vitest run --config vitest.config.ts tests/e2e",
+    "test": "bunx vitest run --config vitest.config.ts"
+  }
+}

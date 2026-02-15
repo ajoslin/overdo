@@ -1,0 +1,14 @@
+{
+  "name": "overdo-mcp",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "overdo-mcp": "./bin/overdo-mcp-server.mjs"
+  },
+  "scripts": {
+    "build": "bunx tsc -p tsconfig.json",
+    "lint": "bunx eslint .",
+    "test": "bunx vitest run"
+  }
+}

@@ -8,7 +8,7 @@
 
 ## Validation
 
-- Unit: `tests/unit/loop-engine.test.ts`
+- Unit: `packages/overdo-core/tests/unit/loop-engine.test.ts`
   - gate enforcement behavior
   - retry exhaustion escalation behavior
   - failure classification and backoff behavior

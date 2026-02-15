@@ -26,7 +26,7 @@ as architecture inspiration while staying TypeScript-only.
 
 ### Phase 1
 
-1. Inventory implementation surfaces (`src/`, `tests/`, `evidence/`).
+1. Inventory implementation surfaces (`packages/overdo-core/src/`, `packages/*/tests/`, `evidence/`).
 2. Build requirement map from `PRD.md` + `PHASES.md`.
 3. Score each item: done/partial/missing + confidence + severity.
 
@@ -59,17 +59,17 @@ as architecture inspiration while staying TypeScript-only.
 
 ## Integration Touchpoints
 
-- `src/foundation/*`
-- `src/mcp/*`
-- `src/runtime/*`
-- `src/commits/*`
-- `src/validation/*`
-- `src/planning/*`
-- `src/ui/*`
+- `packages/overdo-core/src/foundation/*`
+- `packages/overdo-core/src/mcp/*`
+- `packages/overdo-core/src/runtime/*`
+- `packages/overdo-core/src/commits/*`
+- `packages/overdo-core/src/validation/*`
+- `packages/overdo-core/src/planning/*`
+- `packages/overdo-core/src/ui/*`
 
 ## Demo Path
 
-1. `npm test`
+1. `bun run test`
 2. Produce matrix and backlog
 3. Validate one critical closure item end-to-end
 
@@ -94,16 +94,16 @@ Scoring rubric:
 
 | Requirement Area | Status | Evidence | Gaps To Close |
 |---|---|---|---|
-| TS baseline and CI | Done | `package.json`, `.github/workflows/ci.yml`, `npm test`, `npm run build`, `npm run lint` | None |
-| Foundation schema breadth | Done | `src/foundation/schema.ts`, `tests/integration/sqlite-harness.test.ts` | None |
-| Task graph invariants | Done | `src/foundation/task-graph.ts`, `tests/unit/foundation-task-graph.test.ts` | None |
-| Event log durability/idempotency | Done | `src/foundation/event-log.ts`, `tests/unit/event-log.test.ts`, `tests/integration/mcp-v1-contract.test.ts` | None |
-| MCP v1 contract surface | Done | `src/mcp/v1.ts`, `tests/integration/mcp-v1-contract.test.ts`, `tests/e2e/full-orchestrate.e2e.test.ts` | None |
-| Scheduler + leases + reclaim | Done | `src/runtime/scheduler.ts`, `src/runtime/leases.ts`, `tests/integration/scheduler-leases.test.ts` | None |
-| Commit coordinator safety | Done | `src/commits/coordinator.ts`, `tests/integration/commit-coordinator.test.ts` | None |
-| Feedback-loop policy engine | Done | `src/validation/loop-engine.ts`, `tests/unit/loop-engine.test.ts`, `tests/e2e/full-orchestrate.e2e.test.ts` | None |
-| Plan import fidelity | Done | `src/planning/markdown-import.ts`, `tests/unit/markdown-import.test.ts` | None |
-| Operator UI parity | Done | `src/ui/observability.ts`, `tests/integration/ui-observability.test.ts` | None |
+| TS baseline and CI | Done | `package.json`, `.github/workflows/ci.yml`, `bun run test`, `bun run build`, `bun run lint` | None |
+| Foundation schema breadth | Done | `packages/overdo-core/src/foundation/schema.ts`, `packages/overdo-core/tests/integration/sqlite-harness.test.ts` | None |
+| Task graph invariants | Done | `packages/overdo-core/src/foundation/task-graph.ts`, `packages/overdo-core/tests/unit/foundation-task-graph.test.ts` | None |
+| Event log durability/idempotency | Done | `packages/overdo-core/src/foundation/event-log.ts`, `packages/overdo-core/tests/unit/event-log.test.ts`, `packages/overdo-core/tests/integration/mcp-v1-contract.test.ts` | None |
+| MCP v1 contract surface | Done | `packages/overdo-core/src/mcp/v1.ts`, `packages/overdo-core/tests/integration/mcp-v1-contract.test.ts`, `packages/overdo-core/tests/e2e/full-orchestrate.e2e.test.ts` | None |
+| Scheduler + leases + reclaim | Done | `packages/overdo-core/src/runtime/scheduler.ts`, `packages/overdo-core/src/runtime/leases.ts`, `packages/overdo-core/tests/integration/scheduler-leases.test.ts` | None |
+| Commit coordinator safety | Done | `packages/overdo-core/src/commits/coordinator.ts`, `packages/overdo-core/tests/integration/commit-coordinator.test.ts` | None |
+| Feedback-loop policy engine | Done | `packages/overdo-core/src/validation/loop-engine.ts`, `packages/overdo-core/tests/unit/loop-engine.test.ts`, `packages/overdo-core/tests/e2e/full-orchestrate.e2e.test.ts` | None |
+| Plan import fidelity | Done | `packages/overdo-core/src/planning/markdown-import.ts`, `packages/overdo-core/tests/unit/markdown-import.test.ts` | None |
+| Operator UI parity | Done | `packages/overdo-core/src/ui/observability.ts`, `packages/overdo-core/tests/integration/ui-observability.test.ts` | None |
 
 ## Immediate Corrective Notes
 

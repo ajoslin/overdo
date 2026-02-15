@@ -19,9 +19,9 @@ Use this as the execution brief for a fresh session.
 
 - Core audit summary exists in `docs/audits/overseer-parity-audit.md`.
 - Process-level matrix + chaos tests are in place and passing.
-- OpenCode integration is installed via `npm run overdo:install:opencode`.
+- OpenCode integration is installed via `bun run overdo:install:opencode`.
 - CLI parity scaffold is now implemented and covered by spawned-process e2e in
-  `tests/e2e/process/spawn-overdo-cli.e2e.test.ts`.
+  `packages/overdo-cli/tests/e2e/process/spawn-overdo-cli.e2e.test.ts`.
 
 ## Superset-fork framing (apply throughout audit)
 
@@ -75,15 +75,15 @@ When the next session patches code while auditing, run a tight feedback loop and
 
 Validation mapping to enforce:
 
-- UI behavior changes: Playwriter smoke + `tests/integration/ui-observability.test.ts`
-- Commit/lock behavior changes: integration tests touching `src/commits/coordinator.ts`
-- Runtime/process behavior changes: `tests/e2e/process/*`
+- UI behavior changes: Playwriter smoke + `packages/overdo-core/tests/integration/ui-observability.test.ts`
+- Commit/lock behavior changes: integration tests touching `packages/overdo-core/src/commits/coordinator.ts`
+- Runtime/process behavior changes: `packages/overdo-cli/tests/e2e/process/*`
 - CLI behavior changes: add or run an e2e test that spawns the CLI process (see note below)
 
 CLI testing note:
 
-- The CLI is testable in e2e by spawning the executable (`scripts/overdo.mjs` / `overdo` bin)
-  using the existing process harness patterns under `tests/e2e/process/`.
+- The CLI is testable in e2e by spawning the executable (`packages/overdo-cli/bin/overdo.mjs` / `overdo` bin)
+  using the existing process harness patterns under `packages/overdo-cli/tests/e2e/process/`.
 - Do not rely only on mocked function tests for CLI flows; include at least one process-spawn test
   for any user-visible CLI behavior touched by the audit implementation.
 
@@ -142,8 +142,8 @@ Score:
 
 Minimum verification:
 
-- run `npm run e2e:process`
-- run `E2E_PROCESS_CHAOS_ROUNDS=5 npm run e2e:process:chaos`
+- run `bun run e2e:process`
+- run `E2E_PROCESS_CHAOS_ROUNDS=5 bun run e2e:process:chaos`
 - capture chaos report path(s)
 
 ## 4) Never-stop + resume across restarts
@@ -157,23 +157,23 @@ Score:
 
 Minimum verification:
 
-- run `tests/e2e/checkpoint-matrix.e2e.test.ts`
-- run `tests/e2e/checkpoint-chaos.e2e.test.ts`
-- run process crash tests under `tests/e2e/process/`
+- run `packages/overdo-core/tests/e2e/checkpoint-matrix.e2e.test.ts`
+- run `packages/overdo-core/tests/e2e/checkpoint-chaos.e2e.test.ts`
+- run process crash tests under `packages/overdo-cli/tests/e2e/process/`
 
 ## Command checklist
 
 Run in this order and record outcomes:
 
 ```bash
-npm run lint
-npm test
-npm run build
-npm run e2e:process
-E2E_PROCESS_CHAOS_ROUNDS=5 npm run e2e:process:chaos
+bun run lint
+bun run test
+bun run build
+bun run e2e:process
+E2E_PROCESS_CHAOS_ROUNDS=5 bun run e2e:process:chaos
 # When CLI behavior is touched, also run targeted spawned-process coverage:
-vitest run tests/e2e/process/spawn-single-opencode.e2e.test.ts
-vitest run tests/e2e/process/spawn-multi-opencode.e2e.test.ts
+bunx vitest run packages/overdo-cli/tests/e2e/process/spawn-single-opencode.e2e.test.ts
+bunx vitest run packages/overdo-cli/tests/e2e/process/spawn-multi-opencode.e2e.test.ts
 ```
 
 ## Suggested final output format (for the next session)

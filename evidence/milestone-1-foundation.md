@@ -9,8 +9,8 @@
 
 ## Validation
 
-- Unit: `tests/unit/foundation-task-graph.test.ts`
-- Integration: `tests/integration/mcp-v1-contract.test.ts`
+- Unit: `packages/overdo-core/tests/unit/foundation-task-graph.test.ts`
+- Integration: `packages/overdo-core/tests/integration/mcp-v1-contract.test.ts`
 
 ## Failure injection
 
@@ -19,4 +19,4 @@
 
 ## Recovery/resume proof
 
-- Existing `tests/integration/resume-proof.test.ts` verifies persisted state survives restart and resumes progress.
+- Existing `packages/overdo-core/tests/integration/resume-proof.test.ts` verifies persisted state survives restart and resumes progress.

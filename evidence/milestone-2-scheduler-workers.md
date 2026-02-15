@@ -8,7 +8,7 @@
 
 ## Validation
 
-- Integration: `tests/integration/scheduler-leases.test.ts`
+- Integration: `packages/overdo-core/tests/integration/scheduler-leases.test.ts`
   - bounded non-overlapping dispatch proof
   - stale lease reclaim and task reset proof
 

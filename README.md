@@ -20,19 +20,19 @@ https://github.com/dmmulroy/overseer
 ```bash
 git clone https://github.com/ajoslin/overdo.git
 cd overdo
-npm install
+bun install
 ```
 
 Optional (global CLI):
 
 ```bash
-npm link
+bun link
 ```
 
 ## Install into OpenCode (MCP + skills)
 
 ```bash
-npm run overdo:install:opencode
+bun run overdo:install:opencode
 ```
 
 This installs:
@@ -57,16 +57,16 @@ overdo ui --port 6969
 overdo completions bash
 
 # quality
-npm run lint
-npm test
+bun run lint
+bun run test
 
 # focused suites
-npm run unit
-npm run integration
-npm run e2e
-npm run e2e:process
-npm run e2e:process:chaos
+bun run unit
+bun run integration
+bun run e2e
+bun run e2e:process
+bun run e2e:process:chaos
 
 # build
-npm run build
+bun run build
 ```

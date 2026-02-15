@@ -16,12 +16,12 @@
 
 Commands run and passing:
 
-- `npm run lint`
-- `npm run unit`
-- `npm run integration`
-- `npm run e2e`
-- `npm run build`
-- `npm test`
+- `bun run lint`
+- `bun run unit`
+- `bun run integration`
+- `bun run e2e`
+- `bun run build`
+- `bun run test`
 
 Latest full-suite result:
 
@@ -30,12 +30,12 @@ Latest full-suite result:
 
 ## Failure Injection + Recovery Proofs
 
-- Commit stale-base failure injection: `tests/integration/commit-coordinator.test.ts`.
-- Loop escalation path injection: `tests/unit/loop-engine.test.ts`.
-- Invalid SQL harness failure artifact: `tests/integration/sqlite-harness.test.ts`.
-- Lease expiry reclaim and restart safety: `tests/integration/scheduler-leases.test.ts`.
-- Resume continuity proof: `tests/integration/resume-proof.test.ts`.
+- Commit stale-base failure injection: `packages/overdo-core/tests/integration/commit-coordinator.test.ts`.
+- Loop escalation path injection: `packages/overdo-core/tests/unit/loop-engine.test.ts`.
+- Invalid SQL harness failure artifact: `packages/overdo-core/tests/integration/sqlite-harness.test.ts`.
+- Lease expiry reclaim and restart safety: `packages/overdo-core/tests/integration/scheduler-leases.test.ts`.
+- Resume continuity proof: `packages/overdo-core/tests/integration/resume-proof.test.ts`.
 
 ## End-to-End Proof
 
-- `tests/e2e/full-orchestrate.e2e.test.ts` executes plan -> dispatch -> loop -> commit -> telemetry -> event replay.
+- `packages/overdo-core/tests/e2e/full-orchestrate.e2e.test.ts` executes plan -> dispatch -> loop -> commit -> telemetry -> event replay.

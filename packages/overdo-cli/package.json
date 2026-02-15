@@ -1,0 +1,17 @@
+{
+  "name": "overdo",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "bin": {
+    "overdo": "./bin/overdo.mjs"
+  },
+  "scripts": {
+    "build": "bunx tsc -p tsconfig.json",
+    "lint": "bunx eslint .",
+    "test": "bunx vitest run --config vitest.config.ts",
+    "e2e:process": "RUN_OPENCODE_PROCESS_E2E=1 bunx vitest run --config vitest.config.ts --maxWorkers=1 tests/e2e/process",
+    "e2e:process:chaos": "node scripts/e2e-process-chaos.mjs",
+    "overdo:install:opencode": "node bin/install-opencode.mjs"
+  }
+}

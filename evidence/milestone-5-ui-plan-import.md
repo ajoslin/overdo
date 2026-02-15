@@ -7,8 +7,8 @@
 
 ## Validation
 
-- Unit: `tests/unit/markdown-import.test.ts`
-- Integration: `tests/integration/ui-observability.test.ts`
+- Unit: `packages/overdo-core/tests/unit/markdown-import.test.ts`
+- Integration: `packages/overdo-core/tests/integration/ui-observability.test.ts`
 
 ## Failure injection
 
