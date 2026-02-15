@@ -12,7 +12,8 @@ Use when:
 When running hardening/polish loops, use this strict sequence:
 
 1. Synthesize bugs and taste/polish feedback from current implementation.
-2. Open Linear issues for all discovered bugs in a dedicated Overdo bug project.
+2. Open Linear issues for all discovered bugs in project `test-loop`.
+   - Apply label `bug` to every generated bug issue.
 3. Run `linear-bug-plan` on each issue.
 4. Run `linear-bug-fix` on each issue **one at a time**:
    - create/switch to a fresh branch per issue
