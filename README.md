@@ -47,6 +47,7 @@ This installs:
 overdo help
 overdo --version
 overdo --db .overdo/tasks.db init
+OVERDO_DB_PATH=.overdo/tasks.db overdo --json task list
 overdo test unit
 overdo test process
 overdo --json task create -d "Bootstrap milestone"

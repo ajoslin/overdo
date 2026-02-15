@@ -128,7 +128,7 @@ function runCommand(bin, argv) {
 }
 
 function printHelp() {
-  console.log(`overdo CLI\n\nGlobal options:\n  --help\n  --version\n  --json\n  --db <path>\n\nCommands:\n  overdo init\n  overdo test [unit|integration|e2e|process|chaos]\n  overdo task <create|get|list|update|block|unblock|start|complete|reopen|delete|next-ready|search|progress>\n  overdo mcp\n  overdo ui [--port <number>]\n  overdo completions <bash|zsh|fish|powershell|elvish>\n  overdo install opencode`);
+  console.log(`overdo CLI\n\nGlobal options:\n  --help\n  --version\n  --json\n  --db <path>\n\nEnvironment:\n  OVERDO_DB_PATH (used when --db is not provided)\n\nCommands:\n  overdo init\n  overdo test [unit|integration|e2e|process|chaos]\n  overdo task <create|get|list|update|block|unblock|start|complete|reopen|delete|next-ready|search|progress>\n  overdo mcp\n  overdo ui [--port <number>]\n  overdo completions <bash|zsh|fish|powershell|elvish>\n  overdo install opencode`);
 }
 
 function printUiHelp() {
@@ -174,6 +174,9 @@ function parseGlobalFlags(argv) {
 }
 
 function defaultDbPath() {
+  if (process.env.OVERDO_DB_PATH) {
+    return process.env.OVERDO_DB_PATH;
+  }
   return join(process.cwd(), ".overdo", "tasks.db");
 }
 

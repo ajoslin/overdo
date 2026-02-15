@@ -56,6 +56,28 @@ describe("process e2e: spawn overdo cli", () => {
     }
   });
 
+  it("uses OVERDO_DB_PATH when --db is not provided", async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), "overdo-cli-envdb-"));
+    const dbPath = join(tempDir, "env", "tasks.db");
+    try {
+      const initResult = await runOverdoCli(["--json", "init"], { env: { OVERDO_DB_PATH: dbPath } });
+      expect(initResult.exitCode).toBe(0);
+      expect(existsSync(dbPath)).toBe(true);
+
+      const createResult = await runOverdoCli(["--json", "task", "create", "--id", "task_env", "-d", "Env task"], {
+        env: { OVERDO_DB_PATH: dbPath }
+      });
+      expect(createResult.exitCode).toBe(0);
+      const task = JSON.parse(createResult.stdout) as { id: string; title: string; status: string; priority: number };
+      expect(task.id).toBe("task_env");
+      expect(task.title).toBe("Env task");
+      expect(task.status).toBe("pending");
+      expect(task.priority).toBe(1);
+    } finally {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it("prints bash completion script", async () => {
     const result = await runOverdoCli(["completions", "bash"]);
 
@@ -236,12 +258,17 @@ describe("process e2e: spawn overdo cli", () => {
   });
 });
 
-function runOverdoCli(args: string[], timeoutMs = 10_000): Promise<CliRunResult> {
+function runOverdoCli(
+  args: string[],
+  options: { timeoutMs?: number; env?: Record<string, string> } = {}
+): Promise<CliRunResult> {
+  const timeoutMs = options.timeoutMs ?? 10_000;
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [join(process.cwd(), "scripts", "overdo.mjs"), ...args], {
       cwd: process.cwd(),
       env: {
         ...process.env,
+        ...options.env,
         NO_COLOR: "1"
       },
       stdio: ["ignore", "pipe", "pipe"]

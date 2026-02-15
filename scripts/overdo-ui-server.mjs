@@ -7,7 +7,7 @@ import { DatabaseSync } from "node:sqlite";
 
 const args = process.argv.slice(2);
 const port = parsePort(args);
-const dbPath = parseDbPath(args) ?? join(process.cwd(), ".overdo", "tasks.db");
+const dbPath = parseDbPath(args) ?? process.env.OVERDO_DB_PATH ?? join(process.cwd(), ".overdo", "tasks.db");
 
 ensureSchema(dbPath);
 
