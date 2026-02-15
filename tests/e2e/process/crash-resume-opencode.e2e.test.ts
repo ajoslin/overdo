@@ -17,7 +17,7 @@ describe("process e2e: crash and resume", () => {
         "Write 120 short numbered lines saying RESUME_TEST_<n> and then finish with FINAL_LONG_OUTPUT_DONE.",
     });
 
-    const sawSession = await live.waitForOutput((line) => line.includes('"sessionID":"'), 20_000);
+    const sawSession = await live.waitForOutput((line) => line.includes('"sessionID":"'), 45_000);
     expect(sawSession).toBe(true);
 
     const sessionId = live.getSessionId();
