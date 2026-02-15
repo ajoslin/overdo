@@ -20,6 +20,26 @@ Use this as the execution brief for a fresh session.
 - Core audit summary exists in `docs/audits/overseer-parity-audit.md`.
 - Process-level matrix + chaos tests are in place and passing.
 - OpenCode integration is installed via `npm run overdo:install:opencode`.
+- CLI parity scaffold is now implemented and covered by spawned-process e2e in
+  `tests/e2e/process/spawn-overdo-cli.e2e.test.ts`.
+
+## Superset-fork framing (apply throughout audit)
+
+- Treat Overdo as a **superset-fork** of Overseer: preserve Overseer-style command/UX semantics where feasible.
+- Equivalent behavior is the default target for shared surfaces.
+- Overdo-specific additions are allowed if they do not regress Overseer-compatible workflows.
+- In parity scoring, classify each feature as:
+  - `equivalent`
+  - `superset-equivalent` (equivalent core + additive behavior)
+  - `divergent` (explicitly document why)
+
+## What remains (high priority)
+
+1. complete measured scorecard artifacts listed below (audit/scorecard/evidence/gap plan)
+2. run and capture full command checklist including chaos report path
+3. complete UI smoke loop via Playwriter with saved artifacts under `artifacts/e2e/ui-smoke/`
+4. verify aggressive commit behavior against measurable thresholds (not narrative claims)
+5. finalize gap-closure plan with ordered implementation tasks and effort estimates
 
 ## Required audit deliverables
 
