@@ -58,6 +58,26 @@ describe("commit coordinator", () => {
         commitSha: "deadbeef"
       })
     ).toThrow("stale base revision detected");
+
+    const queued = db.prepare("select status from commit_queue where task_id = ?").get("task-2") as { status: string };
+    expect(queued.status).toBe("queued");
+  });
+
+  it("marks malformed queued commit row as failed and continues", () => {
+    const db = setupTestDb();
+    db.prepare(
+      "insert into commit_queue (task_id, status, summary, manifest_json, base_revision, current_revision, created_at) values (?, 'queued', ?, ?, ?, ?, ?)"
+    ).run("task-4", "bad manifest", JSON.stringify({ paths: [] }), "r1", "r1", new Date().toISOString());
+
+    const processed = processNextCommit(db, {
+      owner: "worker-a",
+      taskId: "task-4",
+      commitSha: "abc"
+    });
+    expect(processed).toBe(false);
+
+    const row = db.prepare("select status from commit_queue where task_id = ?").get("task-4") as { status: string };
+    expect(row.status).toBe("failed");
   });
 
   it("rejects enqueue when manifest paths are empty", () => {

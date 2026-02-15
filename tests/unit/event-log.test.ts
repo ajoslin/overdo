@@ -31,4 +31,23 @@ describe("event log", () => {
     expect(replay).toHaveLength(1);
     expect(replay[0].idempotencyKey).toBe("k2");
   });
+
+  it("supports eventType filter and bounded replay windows", () => {
+    const db = setupTestDb();
+    for (let i = 1; i <= 5; i += 1) {
+      appendEvent(db, {
+        taskId: "t1",
+        eventType: i % 2 === 0 ? "task.updated" : "task.created",
+        payload: `{"index":${i}}`,
+        idempotencyKey: `k${i}`,
+        source: "test"
+      });
+    }
+
+    const updatedOnly = listEvents(db, { taskId: "t1", eventType: "task.updated" });
+    expect(updatedOnly.map((event) => event.idempotencyKey)).toEqual(["k2", "k4"]);
+
+    const window = replayEvents(db, 2, 2);
+    expect(window.map((event) => event.idempotencyKey)).toEqual(["k3", "k4"]);
+  });
 });
