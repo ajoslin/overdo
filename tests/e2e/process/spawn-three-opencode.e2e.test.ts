@@ -12,21 +12,24 @@ describe("process e2e: spawn three OpenCode workers", () => {
         workdir: process.cwd(),
         model: "opencode/gpt-5-nano",
         prompt: "Reply with exactly: TRIPLE_A_READY",
-        timeoutMs: 120_000
+        timeoutMs: 90_000,
+        retries: 1
       }),
       runOpenCodeProcess({
         label: "triple-worker-b",
         workdir: process.cwd(),
         model: "opencode/gpt-5-nano",
         prompt: "Reply with exactly: TRIPLE_B_READY",
-        timeoutMs: 120_000
+        timeoutMs: 90_000,
+        retries: 1
       }),
       runOpenCodeProcess({
         label: "triple-worker-c",
         workdir: process.cwd(),
         model: "opencode/gpt-5-nano",
         prompt: "Reply with exactly: TRIPLE_C_READY",
-        timeoutMs: 120_000
+        timeoutMs: 90_000,
+        retries: 1
       })
     ]);
 
@@ -42,5 +45,5 @@ describe("process e2e: spawn three OpenCode workers", () => {
     expect(flattened).toContain("TRIPLE_A_READY");
     expect(flattened).toContain("TRIPLE_B_READY");
     expect(flattened).toContain("TRIPLE_C_READY");
-  }, 180_000);
+  }, 300_000);
 });

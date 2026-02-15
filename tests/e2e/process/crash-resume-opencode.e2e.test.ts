@@ -33,7 +33,8 @@ describe("process e2e: crash and resume", () => {
       model: "opencode/gpt-5-nano",
       sessionId: sessionId!,
       prompt: "Reply with exactly: RESUMED_OK",
-      timeoutMs: 90_000
+      timeoutMs: 90_000,
+      retries: 0
     });
 
     expect(resumed.exitCode).toBe(0);

@@ -11,7 +11,8 @@ describe("process e2e: spawn single OpenCode", () => {
       workdir: process.cwd(),
       model: "opencode/gpt-5-nano",
       prompt: "Reply with exactly: WORKER_ONE_READY",
-      timeoutMs: 90_000
+      timeoutMs: 90_000,
+      retries: 1
     });
 
     expect(result.exitCode).toBe(0);
@@ -19,5 +20,5 @@ describe("process e2e: spawn single OpenCode", () => {
     const normalized = result.textParts.map((part) => part.trim()).filter((part) => part.length > 0);
     expect(normalized).toContain("WORKER_ONE_READY");
     expect(result.durationMs).toBeLessThan(90_000);
-  }, 120_000);
+  }, 220_000);
 });

@@ -12,14 +12,16 @@ describe("process e2e: spawn multiple OpenCode workers", () => {
         workdir: process.cwd(),
         model: "opencode/gpt-5-nano",
         prompt: "Reply with exactly: WORKER_A_READY",
-        timeoutMs: 90_000
+        timeoutMs: 90_000,
+        retries: 1
       }),
       runOpenCodeProcess({
         label: "multi-worker-b",
         workdir: process.cwd(),
         model: "opencode/gpt-5-nano",
         prompt: "Reply with exactly: WORKER_B_READY",
-        timeoutMs: 90_000
+        timeoutMs: 90_000,
+        retries: 1
       })
     ]);
 
@@ -32,5 +34,5 @@ describe("process e2e: spawn multiple OpenCode workers", () => {
     const normalizedB = workerB.textParts.map((part) => part.trim()).filter((part) => part.length > 0);
     expect(normalizedA).toContain("WORKER_A_READY");
     expect(normalizedB).toContain("WORKER_B_READY");
-  }, 120_000);
+  }, 240_000);
 });

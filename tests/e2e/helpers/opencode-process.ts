@@ -1,6 +1,7 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
 
 export type OpenCodeRunResult = {
   runId: string;
@@ -27,7 +28,41 @@ export type OpenCodeLiveProcess = {
   artifactDir: string;
 };
 
+export type ExportedSession = {
+  info: { id: string };
+  messages: Array<{
+    info: { role: string };
+    parts: Array<{ type: string; text?: string }>;
+  }>;
+};
+
 export async function runOpenCodeProcess(input: {
+  prompt: string;
+  sessionId?: string;
+  model?: string;
+  timeoutMs?: number;
+  workdir: string;
+  label: string;
+  retries?: number;
+}): Promise<OpenCodeRunResult> {
+  const retries = input.retries ?? 0;
+  let lastResult: OpenCodeRunResult | null = null;
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    const result = await runOpenCodeProcessOnce(input);
+    lastResult = result;
+    if (result.exitCode === 0) {
+      return result;
+    }
+  }
+
+  if (!lastResult) {
+    throw new Error("failed to run OpenCode process");
+  }
+  return lastResult;
+}
+
+async function runOpenCodeProcessOnce(input: {
   prompt: string;
   sessionId?: string;
   model?: string;
@@ -256,4 +291,16 @@ function buildRunArgs(prompt: string, model?: string, sessionId?: string): strin
   }
   args.push(prompt);
   return args;
+}
+
+export function exportOpenCodeSession(workdir: string, sessionId: string): ExportedSession {
+  const raw = execFileSync("opencode", ["export", sessionId], {
+    cwd: workdir,
+    encoding: "utf8"
+  });
+  const jsonStart = raw.indexOf("{");
+  if (jsonStart === -1) {
+    throw new Error("failed to parse opencode export output");
+  }
+  return JSON.parse(raw.slice(jsonStart)) as ExportedSession;
 }

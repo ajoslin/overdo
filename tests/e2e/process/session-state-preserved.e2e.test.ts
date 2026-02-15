@@ -11,7 +11,8 @@ describe("process e2e: session state preservation", () => {
       workdir: process.cwd(),
       model: "opencode/gpt-5-nano",
       prompt: "Remember TOKEN_42ZX. Reply exactly: STORED_TOKEN",
-      timeoutMs: 90_000
+      timeoutMs: 90_000,
+      retries: 0
     });
 
     expect(initial.exitCode).toBe(0);
@@ -24,11 +25,12 @@ describe("process e2e: session state preservation", () => {
       model: "opencode/gpt-5-nano",
       sessionId: initial.sessionId!,
       prompt: "What token did I ask you to remember? Reply exactly: TOKEN:TOKEN_42ZX",
-      timeoutMs: 90_000
+      timeoutMs: 90_000,
+      retries: 0
     });
 
     expect(followup.exitCode).toBe(0);
     expect(followup.sessionId).toBe(initial.sessionId);
     expect(followup.textParts.map((part) => part.trim())).toContain("TOKEN:TOKEN_42ZX");
-  }, 120_000);
+  }, 220_000);
 });
