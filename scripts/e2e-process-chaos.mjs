@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-/* global process, setTimeout */
-
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";

@@ -23,9 +23,33 @@ cd overdo
 npm install
 ```
 
+Optional (global CLI):
+
+```bash
+npm link
+```
+
+## Install into OpenCode (MCP + skills)
+
+```bash
+npm run overdo:install:opencode
+```
+
+This installs:
+
+- MCP server entry under your `~/.config/opencode/opencode.json` as `mcp.overdo`
+- Skills into `~/.config/opencode/skills/overdo-plan` and `~/.config/opencode/skills/overdo-orchestrate`
+
 ## Basic CLI usage
 
 ```bash
+# CLI
+overdo help
+overdo doctor
+overdo test all
+overdo test process
+overdo mcp
+
 # quality
 npm run lint
 npm test

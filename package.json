@@ -1,9 +1,12 @@
 {
   "name": "overdo",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Overdo orchestration platform bootstrap",
   "type": "module",
+  "bin": {
+    "overdo": "./scripts/overdo.mjs"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "lint": "eslint .",
@@ -12,6 +15,7 @@
     "e2e": "vitest run tests/e2e",
     "e2e:process": "RUN_OPENCODE_PROCESS_E2E=1 vitest run --maxWorkers=1 tests/e2e/process",
     "e2e:process:chaos": "node scripts/e2e-process-chaos.mjs",
+    "overdo:install:opencode": "node scripts/install-opencode.mjs",
     "test": "vitest run"
   },
   "engines": {
