@@ -13,6 +13,9 @@ Validated OpenCode process-level harness behavior with deterministic/gated tests
 - Dedicated script: `npm run e2e:process`
   - `RUN_OPENCODE_PROCESS_E2E=1`
   - single worker execution for stability (`--maxWorkers=1`)
+- Chaos runner: `npm run e2e:process:chaos`
+  - round-based process suite stress execution
+  - writes JSON report under `artifacts/e2e/chaos-runs/`
 
 ## Process Scenarios Covered
 
@@ -36,8 +39,14 @@ Validated OpenCode process-level harness behavior with deterministic/gated tests
 ## Validation Results
 
 - `npm run e2e:process` passed: 8/8 process tests.
+- `npm run e2e:process:chaos` validated with 1 stress round and report emission.
 - `npm run e2e` passed with process tests gated by env var.
 - `npm test`, `npm run lint`, and `npm run build` pass.
+
+## Additional Crash Matrix Coverage
+
+- `tests/e2e/checkpoint-matrix.e2e.test.ts` covers 5 named crash checkpoints with deterministic hook injection.
+- `tests/e2e/checkpoint-chaos.e2e.test.ts` runs seeded randomized crash-point permutations and validates recovery invariants.
 
 ## Notes
 
