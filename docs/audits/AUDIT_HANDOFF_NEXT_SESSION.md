@@ -58,6 +58,16 @@ Minimum verification:
 - identify whether frontend app exists (or not)
 - verify any UI runtime/e2e tests
 
+Playwright smoke loop (required):
+
+- Use Playwriter MCP against the running UI surface.
+- Run at least 3 smoke flows in a feedback loop:
+  1. open status view -> verify task cards render
+  2. switch/list or kanban view -> verify state remains consistent
+  3. trigger refresh/reconnect path -> verify telemetry updates
+- For each failure, patch and re-run until pass.
+- Save screenshots/logs to `artifacts/e2e/ui-smoke/` and link them in evidence.
+
 ## 2) Aggressive committing
 
 Score:
